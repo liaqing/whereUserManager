@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.where.where_user_management.model.Administrator" >
+  <resultMap id="BaseResultMap" type="com.where.where_user_management.model.Administrator" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="USERNAME" property="username" jdbcType="VARCHAR" />
+    <result column="PASSWORD" property="password" jdbcType="VARCHAR" />
+    <result column="SALT" property="salt" jdbcType="VARCHAR" />
+    <result column="ISLOCKED" property="islocked" jdbcType="DECIMAL" />
+    <result column="BIRTHDAY" property="birthday" jdbcType="DATE" />
+    <result column="SEX" property="sex" jdbcType="DECIMAL" />
+    <result column="REGISTRATION_TIME" property="registrationTime" jdbcType="TIMESTAMP" />
+    <result column="PHONE" property="phone" jdbcType="VARCHAR" />
+    <result column="EMAIL" property="email" jdbcType="VARCHAR" />
+    <result column="ADDRESS" property="address" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, USERNAME, PASSWORD, SALT, ISLOCKED, BIRTHDAY, SEX, REGISTRATION_TIME, PHONE, 
+    EMAIL, ADDRESS
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from ADMINISTRATOR
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+  
+  <!-- 查询所有对象 -->
+  <select id="select" resultMap="BaseResultMap">
+  	select 
+  	<include refid="Base_Column_List" />
+  	from Administrator
+  </select>
+  
+  <!--通过名字查询对象  -->
+  <select id="selectByUsername" parameterType="com.where.where_user_management.model.Administrator" resultMap="BaseResultMap">
+  	select
+  	<include refid="Base_Column_List" />
+  	from administrator
+  	where username=#{username,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 模糊查询对象 -->
+   <select id="selectLike" parameterType="com.where.where_user_management.model.Administrator" resultMap="BaseResultMap">
+  	select 
+  	<include refid="Base_Column_List"/>
+  	from Administrator
+  	<where>
+  		<if test="username != null">
+  			username like '%'||#{username}||'%'
+  		</if>
+  		<if test="sex != null">
+  			and sex like '%'||#{sex}||'%'
+  		</if>
+  	</where>
+  </select>
+  
+  <!--分页查询对象  -->
+  <select id="find" parameterType="map" resultMap="BaseResultMap">
+  	SELECT * FROM
+		(
+		   SELECT A.*, ROWNUM RN
+		   FROM (
+		   select * from Administrator
+		   <where>
+		   	<if test="administrator.username!=null">
+		   		name = #{administrator.username}
+		   	</if>
+		   
+		   </where>
+		   
+		   ) A
+		   
+		)
+	WHERE RN between #{pageNo} and #{pageNo}+#{pageSize}-1
+  </select>
+  
+  <!--分页模糊查询对象  -->
+    <select id="findLike" parameterType="map" resultMap="BaseResultMap">
+  		SELECT * FROM
+		(
+		   SELECT A.*, ROWNUM RN
+		   FROM (
+		   select * from Administrator
+		   <where>
+		   	<if test="administrator.username!=null">
+		   		name like '%'||#{administrator.username}||'%'
+		   	</if>
+		   
+		   </where>
+		   
+		   ) A
+		   
+		)
+	WHERE RN between #{pageNo} and #{pageNo}+#{pageSize}-1
+  </select>
+  
+  <!-- 按条件查询条数 -->
+  <select id="findCount" parameterType="map" resultType="java.lang.Integer">
+  	SELECT count(*) FROM
+		(
+		   SELECT A.*, ROWNUM RN
+		   FROM (
+		   select * from Administrator
+		   <where>
+		   	<if test="administrator.username!=null">
+		   		name = #{administrator.username}
+		   	</if>
+		   
+		   </where>
+		   
+		   ) A
+		   
+		)
+  </select>
+  <!--按条件模糊查询条数  -->
+  <select id="findCountLike" parameterType="map" resultType="java.lang.Integer">
+  	SELECT count(*) FROM
+		(
+		   SELECT A.*, ROWNUM RN
+		   FROM (
+		   select * from Administrator
+		   <where>
+		   	<if test="administrator.username!=null">
+		   		name like '%'||#{administrator.username}||'%'
+		   	</if>
+		   
+		   </where>
+		   
+		   ) A
+		   
+		)
+  </select>
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from ADMINISTRATOR
+    where ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <insert id="insert" parameterType="com.where.where_user_management.model.Administrator" >
+    insert into ADMINISTRATOR (ID, USERNAME, PASSWORD, 
+      SALT, ISLOCKED, BIRTHDAY, 
+      SEX, REGISTRATION_TIME, PHONE, 
+      EMAIL, ADDRESS)
+    values (#{id,jdbcType=DECIMAL}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{salt,jdbcType=VARCHAR}, #{islocked,jdbcType=DECIMAL}, #{birthday,jdbcType=DATE}, 
+      #{sex,jdbcType=DECIMAL}, #{registrationTime,jdbcType=TIMESTAMP}, #{phone,jdbcType=VARCHAR}, 
+      #{email,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.where.where_user_management.model.Administrator" >
+    insert into ADMINISTRATOR
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="username != null" >
+        USERNAME,
+      </if>
+      <if test="password != null" >
+        PASSWORD,
+      </if>
+      <if test="salt != null" >
+        SALT,
+      </if>
+      <if test="islocked != null" >
+        ISLOCKED,
+      </if>
+      <if test="birthday != null" >
+        BIRTHDAY,
+      </if>
+      <if test="sex != null" >
+        SEX,
+      </if>
+      <if test="registrationTime != null" >
+        REGISTRATION_TIME,
+      </if>
+      <if test="phone != null" >
+        PHONE,
+      </if>
+      <if test="email != null" >
+        EMAIL,
+      </if>
+      <if test="address != null" >
+        ADDRESS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="username != null" >
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="salt != null" >
+        #{salt,jdbcType=VARCHAR},
+      </if>
+      <if test="islocked != null" >
+        #{islocked,jdbcType=DECIMAL},
+      </if>
+      <if test="birthday != null" >
+        #{birthday,jdbcType=DATE},
+      </if>
+      <if test="sex != null" >
+        #{sex,jdbcType=DECIMAL},
+      </if>
+      <if test="registrationTime != null" >
+        #{registrationTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.where.where_user_management.model.Administrator" >
+    update ADMINISTRATOR
+    <set >
+      <if test="username != null" >
+        USERNAME = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        PASSWORD = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="salt != null" >
+        SALT = #{salt,jdbcType=VARCHAR},
+      </if>
+      <if test="islocked != null" >
+        ISLOCKED = #{islocked,jdbcType=DECIMAL},
+      </if>
+      <if test="birthday != null" >
+        BIRTHDAY = #{birthday,jdbcType=DATE},
+      </if>
+      <if test="sex != null" >
+        SEX = #{sex,jdbcType=DECIMAL},
+      </if>
+      <if test="registrationTime != null" >
+        REGISTRATION_TIME = #{registrationTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="phone != null" >
+        PHONE = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        EMAIL = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        ADDRESS = #{address,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.where.where_user_management.model.Administrator" >
+    update ADMINISTRATOR
+    set USERNAME = #{username,jdbcType=VARCHAR},
+      PASSWORD = #{password,jdbcType=VARCHAR},
+      SALT = #{salt,jdbcType=VARCHAR},
+      ISLOCKED = #{islocked,jdbcType=DECIMAL},
+      BIRTHDAY = #{birthday,jdbcType=DATE},
+      SEX = #{sex,jdbcType=DECIMAL},
+      REGISTRATION_TIME = #{registrationTime,jdbcType=TIMESTAMP},
+      PHONE = #{phone,jdbcType=VARCHAR},
+      EMAIL = #{email,jdbcType=VARCHAR},
+      ADDRESS = #{address,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+</mapper>
